@@ -1,6 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" />
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: #E6FDFF;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane layoutX="295.0" layoutY="145.0" style="-fx-border-color: black; -fx-border-radius: 15; -fx-border-width: 2;">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffde68" height="195.0" stroke="#ffd67d" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="95.0" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffde68" height="95.0" stroke="#ffd67d" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="195.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffde68" height="95.0" stroke="#ffd67d" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="95.0" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffde68" height="195.0" stroke="#ffd67d" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="95.0" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffde68" height="195.0" stroke="#ffd67d" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="95.0" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffde68" height="195.0" stroke="#ffd67d" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="95.0" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffde68" height="95.0" stroke="#ffd67d" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="95.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffde68" height="95.0" stroke="#ffd67d" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="95.0" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffde68" height="95.0" stroke="#ffd67d" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="95.0" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ff6f00" height="195.0" stroke="#ff5b0f" strokeType="INSIDE" strokeWidth="5.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="195.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+               </GridPane.margin>
+            </Rectangle>
+         </children>
+         <padding>
+            <Insets bottom="2.5" left="2.5" right="2.5" top="2.5" />
+         </padding>
+      </GridPane>
+      <Label layoutX="373.0" layoutY="20.0" text="KLOTSKI">
+         <font>
+            <Font name="Footlight MT Light" size="70.0" />
+         </font>
+      </Label>
+      <Pane layoutX="295.0" layoutY="145.0" prefHeight="510.0" prefWidth="410.0">
+         <children>
+            <Button layoutX="113.0" layoutY="14.0" mnemonicParsing="false" prefHeight="185.0" prefWidth="185.0" style="-fx-background-color: transparent;" styleClass="hoverable_btn" text="PLAY">
+               <font>
+                  <Font name="DejaVu Serif Condensed Bold" size="40.0" />
+               </font>
+            </Button>
+            <Button layoutX="113.0" layoutY="213.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="185.0" style="-fx-background-color: transparent;" styleClass="hoverable_btn" text="LOAD GAME">
+               <font>
+                  <Font name="DejaVu Serif Condensed Bold" size="24.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+   </children>
+</Pane>

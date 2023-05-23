@@ -14,8 +14,11 @@ public class KlotskiApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader menuLoader = new FXMLLoader(KlotskiApplication.class.getResource("FXML/MenuView.fxml"));
         Scene scene = new Scene(menuLoader.load());
+
+        // application stylesheet
         scene.getStylesheets().add(Objects.requireNonNull(KlotskiApplication.class.getResource("style/style.css")).toExternalForm());
 
+        // application icon
         Image icon = new Image(Objects.requireNonNull(KlotskiApplication.class.getResource("assets/icons/klotski.png")).toString());
 
         // stage config

@@ -1,0 +1,4 @@
+.hoverable_btn:hover {
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
