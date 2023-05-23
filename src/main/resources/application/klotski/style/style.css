@@ -1,4 +1,9 @@
-.hoverable_btn:hover {
-    -fx-underline: true;
-    -fx-cursor: hand;
+/* MENU */
+
+#play_btn:hover {
+    -fx-text-fill: white;
+}
+
+#load_game_btn:hover {
+    -fx-text-fill: red;
 }
