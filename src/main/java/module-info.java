@@ -5,4 +5,6 @@ module application.klotski {
 
     opens application.klotski to javafx.fxml;
     exports application.klotski;
+    exports application.klotski.View;
+    opens application.klotski.View to javafx.fxml;
 }

@@ -1,9 +1,9 @@
-package application.klotski;
+package application.klotski.View;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class MenuView {
     @FXML
     private Label welcomeText;
 
