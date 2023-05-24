@@ -12,9 +12,9 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E6FDFF;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E6FDFF;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.klotski.View.MenuView">
    <children>
-      <GridPane layoutX="195.0" layoutY="68.0" style="-fx-border-color: black; -fx-border-radius: 15; -fx-border-width: 2;">
+      <GridPane layoutX="195.0" layoutY="68.0" style="-fx-border-color: black; -fx-border-radius: 15; -fx-border-width: 2; -fx-background-color: #08415C; -fx-background-radius: 15;">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
@@ -99,7 +99,7 @@
                   <Shadow />
                </effect>
             </Pane>
-            <Button id="play_btn" layoutX="113.0" layoutY="14.0" mnemonicParsing="false" prefHeight="185.0" prefWidth="185.0" style="-fx-background-color: transparent;" styleClass="hoverable_btn" stylesheets="@../style/style.css" text="PLAY">
+            <Button id="play_btn" layoutX="113.0" layoutY="14.0" mnemonicParsing="false" onAction="#play" prefHeight="185.0" prefWidth="185.0" style="-fx-background-color: transparent;" styleClass="hoverable_btn" stylesheets="@../style/style.css" text="PLAY">
                <font>
                   <Font name="DejaVu Serif Condensed Bold" size="40.0" />
                </font>
@@ -107,7 +107,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button id="load_game_btn" layoutX="113.0" layoutY="213.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="185.0" style="-fx-background-color: transparent;" styleClass="hoverable_btn" stylesheets="@../style/style.css" text="LOAD GAME">
+            <Button id="load_game_btn" layoutX="113.0" layoutY="213.0" mnemonicParsing="false" onAction="#load" prefHeight="85.0" prefWidth="185.0" style="-fx-background-color: transparent;" styleClass="hoverable_btn" stylesheets="@../style/style.css" text="LOAD GAME">
                <font>
                   <Font name="DejaVu Serif Condensed Bold" size="24.0" />
                </font>

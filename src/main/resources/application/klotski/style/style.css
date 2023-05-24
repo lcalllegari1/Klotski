@@ -7,3 +7,24 @@
 #load_game_btn:hover {
     -fx-text-fill: red;
 }
+
+/* PUZZLE SELECTION VIEW */
+
+.config_btn {
+    -fx-border-width: 2;
+    -fx-border-radius: 7;
+    -fx-pref-width: 145;
+    -fx-pref-height: 145;
+    -fx-cursor: hand;
+}
+
+.config_btn:hover {
+    -fx-border-color: red;
+}
+
+.game_piece {
+    -fx-arc-width: 30;
+    -fx-arc-height: 30;
+    -fx-stroke-width: 5;
+    -fx-stroke-type: inside;
+}
