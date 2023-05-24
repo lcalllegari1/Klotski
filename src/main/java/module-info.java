@@ -9,7 +9,7 @@ module application.klotski {
     opens application.klotski.Controller to javafx.fxml;
 
     exports application.klotski;
-    exports application.klotski.View;
     exports application.klotski.Model;
+    exports application.klotski.View;
     exports application.klotski.Controller;
 }
