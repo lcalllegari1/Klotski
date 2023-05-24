@@ -50,7 +50,11 @@ public class History {
         return this.max != -1;
     }
 
-    public ArrayList<Snapshot> download() {
-        return this.history;
+    public ArrayList<String> download() {
+        ArrayList<String> tokens = new ArrayList<>();
+        for (Snapshot snapshot : history) {
+            tokens.add(snapshot.token());
+        }
+        return tokens;
     }
 }

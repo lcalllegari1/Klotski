@@ -123,4 +123,8 @@ public class Game {
         initializeEmpties();
         initializeHistory();
     }
+
+    public ArrayList<String> download() {
+        return history.download();
+    }
 }

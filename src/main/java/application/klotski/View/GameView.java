@@ -20,7 +20,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 
 public class GameView extends View {
     // animations
@@ -78,7 +81,9 @@ public class GameView extends View {
 
     @FXML
     private void saveGame(ActionEvent event) {
-
+        // get the filename (current date-time)
+        String filename = getCurrentTime();
+        System.out.println(filename);
     }
 
     @FXML
@@ -95,6 +100,12 @@ public class GameView extends View {
 
 
     // view updates member functions
+
+    private String getCurrentTime() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd_HH-mm-ss");
+        return formatter.format(now);
+    }
 
     public void displayConfig(Puzzle config) {
         for (Piece piece : config.getPieces()) {
