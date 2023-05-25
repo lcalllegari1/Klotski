@@ -31,6 +31,7 @@ public class MenuView extends View {
     @FXML
     void load(ActionEvent event) {
         // TODO: load saved game view
+        // TODO: Close DATABASE FOR SECURITY REASONS
     }
 
 
