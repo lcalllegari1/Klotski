@@ -10,6 +10,7 @@ public class Game {
     private Puzzle puzzle;
     private final ArrayList<Position> empties = new ArrayList<>();
     private History history;
+    private int id = 0;
 
     // private main constructor to prevent multiple objects of type Game
     private Game() {}
@@ -38,6 +39,32 @@ public class Game {
 
     public Puzzle getPuzzle() {
         return puzzle;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = Math.max(0, id);
+    }
+
+    public String getInitialConfigToken() {
+        return history.getInitialConfigToken();
+    }
+
+    public String getInitialConfigFile() {
+        if (puzzle instanceof FilePuzzle filePuzzle) {
+            return filePuzzle.getFileName();
+        }
+        return "";
+    }
+
+    public String getInitialConfigImg() {
+        if (puzzle instanceof FilePuzzle filePuzzle) {
+            return filePuzzle.getImgFileName();
+        }
+        return "";
     }
 
     // member functions

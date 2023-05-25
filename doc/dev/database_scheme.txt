@@ -1,0 +1,14 @@
+CREATE TABLE "Matches" (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"name"	TEXT NOT NULL,
+	"move_count"	INTEGER NOT NULL,
+	"init_config_token"	INTEGER,
+	"init_config_file"	TEXT NOT NULL,
+	"init_config_img"	TEXT,
+	"curr_config_img"	TEXT NOT NULL,
+	"history_file"	TEXT NOT NULL,
+	PRIMARY KEY("id")
+);
+
+INSERT INTO Matches (name, move_count, path_id) VALUES ('calle', 45, 2);
+INSERT INTO Paths (initial_configuration_file, initial_configuration_image, current_configuration_image, history_file) VALUES ("init file", "init image", "curr image", "history");

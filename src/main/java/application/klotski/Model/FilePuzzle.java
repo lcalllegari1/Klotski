@@ -47,8 +47,18 @@ public final class FilePuzzle extends Puzzle {
         }
     }
 
+    public String getFileName() {
+        String path = file.getPath();
+        return path.substring(path.lastIndexOf("\\") + 1);
+    }
+
     public Image getImage() {
         return this.img;
+    }
+
+    public String getImgFileName() {
+        String url = this.img.getUrl();
+        return url.substring(url.lastIndexOf("/") + 1);
     }
 
     @Override

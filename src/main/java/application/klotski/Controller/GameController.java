@@ -85,6 +85,11 @@ public class GameController {
         view.update(game.getPuzzle(), 0);
     }
 
+    public void saveGame() {
+        boolean saved = SaveGameController.save();
+        System.out.println(saved ? "saved" : "not saved");
+    }
+
     private Direction getDirection(double deltaX, double deltaY) {
         if (deltaX == 0 && deltaY == 0)
             return null;

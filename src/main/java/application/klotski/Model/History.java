@@ -57,4 +57,8 @@ public class History {
         }
         return tokens;
     }
+
+    public String getInitialConfigToken() {
+        return history.get(0).token();
+    }
 }

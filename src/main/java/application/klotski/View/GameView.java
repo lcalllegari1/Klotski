@@ -81,9 +81,7 @@ public class GameView extends View {
 
     @FXML
     private void saveGame(ActionEvent event) {
-        // get the filename (current date-time)
-        String filename = getCurrentTime();
-        System.out.println(filename);
+        gameController.saveGame();
     }
 
     @FXML

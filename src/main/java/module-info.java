@@ -1,6 +1,8 @@
 module application.klotski {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
+    requires javafx.swing;
 
 
     opens application.klotski to javafx.fxml;
