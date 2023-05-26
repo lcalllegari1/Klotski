@@ -1,6 +1,7 @@
 package application.klotski.View;
 
 import application.klotski.Controller.ConfigurationController;
+import application.klotski.Controller.LoadGameController;
 import application.klotski.KlotskiApplication;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,6 +31,19 @@ public class MenuView extends View {
 
     @FXML
     void load(ActionEvent event) {
+        FXMLLoader loader = new FXMLLoader(KlotskiApplication.class.getResource("FXML/LoadGameView.fxml"));
+        try {
+            switchScene(event, loader);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not switch to the desired scene: " + e);
+        }
+
+        // get the view handler of the scene
+        LoadGameView view = loader.getController();
+        // create a new controller to handle this view
+        LoadGameController controller = new LoadGameController(view);
+        // link the view to the controller to handle events
+        view.setController(controller);
         // TODO: load saved game view
         // TODO: Close DATABASE FOR SECURITY REASONS
     }

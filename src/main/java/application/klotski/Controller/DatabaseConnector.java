@@ -3,6 +3,8 @@ package application.klotski.Controller;
 import application.klotski.KlotskiApplication;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class DatabaseConnector {
@@ -26,7 +28,6 @@ public class DatabaseConnector {
     public void connect() {
         try {
             if (connection == null || connection.isClosed()) {
-                System.out.println("in");
                 connection = DriverManager.getConnection(DB_PREFIX + DB_PATH + DB_NAME);
             }
         } catch (SQLException e) {
@@ -97,6 +98,34 @@ public class DatabaseConnector {
         } catch (SQLException e) {
             System.out.println("Could not fetch the specified record.");
         }
+        return null;
+    }
+
+    // get all the records in the database
+    public HashMap<Integer, Record> fetch() {
+        HashMap<Integer, Record> records = new HashMap<>();
+        String query = "SELECT * FROM Matches";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet res = statement.executeQuery(query);
+
+            while (res.next()) {
+                Record record = new Record(
+                        res.getString("name"),
+                        res.getInt("move_count"),
+                        res.getString("init_config_token"),
+                        res.getString("init_config_file"),
+                        res.getString("init_config_img"),
+                        res.getString("curr_config_img"),
+                        res.getString("history_file")
+                );
+                records.put(res.getInt("id"), record);
+            }
+            return records;
+        } catch (SQLException e) {
+            System.out.println("Could not fetch the data.");
+        }
+        // then the query was not completed
         return null;
     }
 

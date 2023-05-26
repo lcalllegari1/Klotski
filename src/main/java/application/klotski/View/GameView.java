@@ -1,6 +1,8 @@
 package application.klotski.View;
 
+import application.klotski.Controller.DatabaseConnector;
 import application.klotski.Controller.GameController;
+import application.klotski.Controller.SaveGameController;
 import application.klotski.KlotskiApplication;
 import application.klotski.Model.Direction;
 import application.klotski.Model.Piece;
@@ -59,6 +61,7 @@ public class GameView extends View {
     @FXML
     private void backToMenu(ActionEvent event) {
         // switch to PuzzleConfigurationMenuView scene
+        SaveGameController.closeConnection();
         FXMLLoader menuLoader = new FXMLLoader(KlotskiApplication.class.getResource(FXML_PATH + "MenuView.fxml"));
         try {
             switchScene(event, menuLoader);

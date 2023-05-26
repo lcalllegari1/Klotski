@@ -146,5 +146,8 @@ public class SaveGameController {
         file.delete();
     }
 
+    public static void closeConnection() {
+        database.close();
+    }
 
 }
