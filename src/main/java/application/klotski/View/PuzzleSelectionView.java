@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,10 +48,14 @@ public class PuzzleSelectionView extends View {
     }
 
     private Button createConfigBtn(Puzzle config, int index) {
-        Background background = getBackground(config instanceof FilePuzzle filePuzzle ? filePuzzle.getImage() : null);
         Button btn = new Button("");
         btn.setUserData(index);
-        btn.setBackground(background);
+        Image img = config instanceof FilePuzzle filePuzzle ? filePuzzle.getImage() :  new Image("file:///" + KlotskiApplication.class.getResource("assets/imgs/configurations/default.png"));
+        btn.setStyle("-fx-background-image: url('" + ((FilePuzzle)config).getImage().getUrl() + "');-fx-background-size: cover");
+        Rectangle clip = new Rectangle(145, 145);
+        clip.setArcWidth(25);
+        clip.setArcHeight(25);
+        btn.setClip(clip);
         btn.setOnAction(this::setConfigBtnAction);
         btn.getStyleClass().add("config_btn");
 
@@ -76,11 +81,6 @@ public class PuzzleSelectionView extends View {
         GameController controller = new GameController(view, puzzle);
         // link the view to the controller to handle events
         view.setController(controller);
-    }
-
-    private Background getBackground(Image img) {
-        BackgroundImage backgroundImage = new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(0.9, 0.9, true, true, false, false));
-        return new Background(backgroundImage);
     }
 
 }

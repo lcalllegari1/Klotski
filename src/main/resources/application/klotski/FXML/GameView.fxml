@@ -88,7 +88,7 @@
          <Shadow />
       </effect>
    </Label>
-   <Button fx:id="undo_btn" focusTraversable="false" layoutX="526.0" layoutY="219.0" mnemonicParsing="false" onAction="#undo" prefHeight="40.0" prefWidth="95.0" style="-fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 2; -fx-background-color: #08415C;" text="UNDO" textFill="WHITE">
+   <Button fx:id="undo_btn" disable="true" focusTraversable="false" layoutX="526.0" layoutY="219.0" mnemonicParsing="false" onAction="#undo" prefHeight="40.0" prefWidth="95.0" style="-fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 2; -fx-background-color: #08415C;" text="UNDO" textFill="WHITE">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor>
@@ -96,7 +96,7 @@
          <Font name="Nunito Black Italic" size="20.0" />
       </font>
    </Button>
-   <Button fx:id="redo_btn" focusTraversable="false" layoutX="632.0" layoutY="219.0" mnemonicParsing="false" onAction="#redo" prefHeight="40.0" prefWidth="95.0" style="-fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 2; -fx-background-color: #08415C;" text="REDO" textFill="WHITE">
+   <Button fx:id="redo_btn" disable="true" focusTraversable="false" layoutX="632.0" layoutY="219.0" mnemonicParsing="false" onAction="#redo" prefHeight="40.0" prefWidth="95.0" style="-fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 2; -fx-background-color: #08415C;" text="REDO" textFill="WHITE">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor>

@@ -28,3 +28,18 @@
     -fx-stroke-width: 5;
     -fx-stroke-type: inside;
 }
+
+.play_saved_game_btn {
+    -fx-background-color: #E6FDFF;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-family: "Nunito Black";
+    -fx-font-size: 16;
+}
+
+
+.play_saved_game_btn:hover {
+    -fx-background-color: #befbff;
+    -fx-cursor: hand;
+}
+

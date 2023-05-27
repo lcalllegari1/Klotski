@@ -3,7 +3,7 @@ package application.klotski.Model;
 import java.util.ArrayList;
 
 public class History {
-    private final ArrayList<Snapshot> history = new ArrayList<>();
+    private ArrayList<Snapshot> history = new ArrayList<>();
     private int index = 0;
     private int max = -1;
 
@@ -56,6 +56,14 @@ public class History {
             tokens.add(snapshot.token());
         }
         return tokens;
+    }
+
+    public void upload(ArrayList<Snapshot> history, int index) {
+        this.history = history;
+        this.index = index;
+        System.out.println("index: " + index + " size: " + history.size());
+        this.max = index == (history.size() - 1) ? -1 : history.size() - 1;
+        System.out.println(max);
     }
 
     public String getInitialConfigToken() {

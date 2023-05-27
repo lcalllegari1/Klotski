@@ -1,6 +1,12 @@
 package application.klotski.Model;
 
+import application.klotski.KlotskiApplication;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class Game {
     // static instance of this class to implement Singleton pattern
@@ -10,7 +16,7 @@ public class Game {
     private Puzzle puzzle;
     private final ArrayList<Position> empties = new ArrayList<>();
     private History history;
-    private int id = 0;
+    private int id;
 
     // private main constructor to prevent multiple objects of type Game
     private Game() {}
@@ -25,8 +31,14 @@ public class Game {
 
     public void init(Puzzle config) {
         puzzle = config;
+        id = 0;
+        moveCounter = 0;
         initializeEmpties();
         initializeHistory();
+    }
+
+    public void setMoveCounter(int index) {
+        this.moveCounter = index;
     }
 
     public int getMoveCount() {
@@ -153,5 +165,25 @@ public class Game {
 
     public ArrayList<String> download() {
         return history.download();
+    }
+
+    public void upload(String filename, int index) {
+        ArrayList<Snapshot> snapshots = new ArrayList<>();
+        File history = new File(Objects.requireNonNull(KlotskiApplication.class.getResource("data/saves/history/")).getFile() + filename);
+
+        Scanner fileReader;
+
+        try {
+            fileReader = new Scanner(history);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("The specified could not be found: " + e);
+        }
+
+        while (fileReader.hasNextLine()) {
+            String token = fileReader.nextLine();
+            snapshots.add(new Snapshot(this.puzzle, token));
+        }
+
+        this.history.upload(snapshots, index);
     }
 }

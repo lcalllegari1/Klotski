@@ -64,7 +64,7 @@ public class View {
 
         // now we have a grid representing the current configuration
         Pane pane = new Pane(grid);
-        pane.setStyle("-fx-background-color: #08415C; -fx-background-radius: 50");
+        pane.setStyle("-fx-background-color: #08415C;");
         double grid_width = (Position.NUM_COLS - 1) * 15 + (Position.NUM_COLS * 100);
         double grid_height = (Position.NUM_ROWS - 1) * 15 + (Position.NUM_ROWS * 100);
         double hcenter = (650 - grid_width) / 2;

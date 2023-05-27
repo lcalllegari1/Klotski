@@ -1,13 +1,14 @@
 package application.klotski.Controller;
 
-import application.klotski.Model.Direction;
-import application.klotski.Model.Game;
-import application.klotski.Model.Position;
-import application.klotski.Model.Puzzle;
+import application.klotski.KlotskiApplication;
+import application.klotski.Model.*;
 import application.klotski.View.GameView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+
+import java.io.File;
+import java.util.Objects;
 
 public class GameController {
     private record MouseInput(double x, double y, MouseEvent event) {}
@@ -15,6 +16,35 @@ public class GameController {
     private MouseInput mouseInput;
     private final Game game;
     private final GameView view;
+
+    public GameController(GameView view, int id) {
+        this.view = view;
+        this.game = Game.getInstance();
+
+        DatabaseConnector database = new DatabaseConnector();
+        database.connect();
+        DatabaseConnector.Record record = database.fetch(id);
+
+        FilePuzzle puzzle = new FilePuzzle(
+                new File(Objects.requireNonNull(KlotskiApplication.class.getResource("/application/klotski/data/configurations/")).getFile() + record.init_config_file()),
+                record.init_config_img().substring(0, record.init_config_img().lastIndexOf(".") + 1)
+        );
+
+        puzzle.restoreSnapshot(LoadGameController.getCurrentConfigToken(record.move_count(), record.history_file()));
+        game.init(puzzle);
+        game.upload(record.history_file(), record.move_count());
+        game.setId(id);
+        game.setMoveCounter(record.move_count());
+        this.view.displayConfig(puzzle);
+        this.view.updateMoveCounter(game.getMoveCount());
+        if (game.isUndoAllowed()) {
+            view.enableUndoBtn();
+        }
+        if (game.isRedoAllowed()) {
+            view.enableRedoBtn();
+        }
+        database.close();
+    }
 
     public GameController(GameView view, Puzzle puzzle) {
         this.view = view;
@@ -26,6 +56,7 @@ public class GameController {
     private void load(Puzzle config) {
         game.init(config);
         view.displayConfig(config);
+        view.updateMoveCounter(game.getMoveCount());
     }
 
     public void mousePressedEvent(MouseEvent event) {
