@@ -2,8 +2,8 @@ package application.klotski.View;
 
 import application.klotski.Controller.DatabaseConnector;
 import application.klotski.Controller.GameController;
-import application.klotski.Controller.LoadGameController;
 import application.klotski.KlotskiApplication;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -11,72 +11,71 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.event.ActionEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 
-public class LoadGameView extends View {
+import static application.klotski.View.View.FXML_DIR_PATH;
 
-    private LoadGameController loadGameController;
+public class LoadGameView {
 
     @FXML
     private VBox panel;
 
+    public void display(ArrayList<DatabaseConnector.Record> records) {
+        for (DatabaseConnector.Record record : records) {
+            panel.getChildren().add(
+                    createCard(record)
+            );
+        }
+    }
+
     @FXML
-    private void backToMenu(ActionEvent event) {
-        FXMLLoader loader = new FXMLLoader(KlotskiApplication.class.getResource("FXML/MenuView.fxml"));
-        try {
-            switchScene(event, loader);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not switch to the desired scene: " + e);
-        }
+    public void backToMenu(ActionEvent event) {
+        FXMLLoader loader = new FXMLLoader(
+                KlotskiApplication.class.getResource(FXML_DIR_PATH + "MenuView.fxml")
+        );
+        View.switchScene(event, loader);
     }
 
-    public void setController(LoadGameController controller) {
-        this.loadGameController = controller;
-    }
-
-    public void displayGames(HashMap<Integer, DatabaseConnector.Record> games) {
-        for (Map.Entry<Integer, DatabaseConnector.Record> game : games.entrySet()) {
-            panel.getChildren().add(createCard(game.getKey(), game.getValue()));
-        }
-    }
-
-    private VBox createCard(int id, DatabaseConnector.Record game) {
+    private VBox createCard(DatabaseConnector.Record game) {
         VBox card = createVBox(10);
-        card.setStyle("-fx-background-color: #08415C; -fx-background-radius: 10; -fx-padding: 10 10 10 10");
-        HBox cardBody = createCardBody(game.init_config_img(), game.curr_config_img(), game.name(), game.move_count());
-        HBox cardFooter = createCardFooter(id);
+        card.setStyle("-fx-background-color: #17255A; -fx-background-radius: 10; -fx-padding: 10");
+        HBox cardBody = createCardBody(game.name() + ".png", game.config(), game.date(), game.move_count());
+        HBox cardFooter = createCardFooter(game.id());
         card.getChildren().addAll(cardBody, cardFooter);
         return card;
     }
 
     private HBox createCardBody(String initConfig, String currConfig, String date, int count) {
-       HBox cardBody = createHBox(15);
-       VBox cardInfo = createCardInfo(date, count);
-       StackPane init_config = createImg(Objects.requireNonNull(KlotskiApplication.class.getResource("/application/klotski/assets/imgs/configurations/")).getFile() + initConfig);
-       StackPane curr_config = createImg(Objects.requireNonNull(KlotskiApplication.class.getResource("/application/klotski/data/saves/imgs/")).getFile() + currConfig);
-       cardBody.getChildren().addAll(init_config, curr_config, cardInfo);
-       return cardBody;
+        HBox cardBody = createHBox(15);
+        VBox cardInfo = createCardInfo(date, count);
+        StackPane init_config = createImg(Objects.requireNonNull(KlotskiApplication.class.getResource("/application/klotski/assets/imgs/configurations/")).getFile() + initConfig);
+        StackPane curr_config = createImg(Objects.requireNonNull(KlotskiApplication.class.getResource("/application/klotski/data/saves/imgs/")).getFile() + currConfig);
+        cardBody.getChildren().addAll(init_config, curr_config, cardInfo);
+        return cardBody;
     }
 
     private HBox createCardFooter(int id) {
         HBox cardFooter = createHBox(15);
         Region spacer = new Region();
-        spacer.setMinWidth(150);
+        spacer.setMinWidth(100);
         Label init_config = createLabel("INITIAL\nCONFIGURATION");
         Label curr_config = createLabel("CURRENT\nCONFIGURATION");
         init_config.setAlignment(Pos.CENTER);
         curr_config.setAlignment(Pos.CENTER);
         Button btn = createPlayBtn(id);
-        cardFooter.getChildren().addAll(init_config, curr_config, spacer, btn);
+        Button delete = createDeleteBtn(id);
+        cardFooter.getChildren().addAll(init_config, curr_config, spacer, delete, btn);
         return cardFooter;
     }
+
 
     private VBox createCardInfo(String date, int count) {
         VBox cardInfo = createVBox(20);
@@ -96,6 +95,18 @@ public class LoadGameView extends View {
         btn.getStyleClass().add("play_saved_game_btn");
         btn.setOnAction(this::setPlayBtnAction);
         btn.setFocusTraversable(false);
+        return btn;
+    }
+
+    private Button createDeleteBtn(int id) {
+        Button btn = new Button("");
+        btn.setUserData(id);
+        btn.setMinSize(35, 35);
+        btn.getStyleClass().add("play_saved_game_btn");
+        btn.setOnAction(this::setDeleteBtnAction);
+        btn.setFocusTraversable(false);
+        URL url = KlotskiApplication.class.getResource("/application/klotski/assets/icons/bin.png");
+        btn.setStyle("-fx-background-image: url('" + url + "'); -fx-background-size: cover");
         return btn;
     }
 
@@ -124,7 +135,7 @@ public class LoadGameView extends View {
         Label lbl = new Label(text);
         lbl.setTextAlignment(TextAlignment.CENTER);
         lbl.setMinWidth(135);
-        lbl.setStyle("-fx-text-fill: white; -fx-font-family: 'Nunito Black'; -fx-font-size: 14;");
+        lbl.setStyle("-fx-text-fill: white; -fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-font-size: 14;");
         return lbl;
     }
 
@@ -132,11 +143,7 @@ public class LoadGameView extends View {
         int id = (int) ((Button) event.getSource()).getUserData();
 
         FXMLLoader loader = new FXMLLoader(KlotskiApplication.class.getResource("FXML/GameView.fxml"));
-        try {
-            switchScene(event, loader);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not switch to the desired scene: " + e);
-        }
+        View.switchScene(event, loader);
 
         // get the view handler of the scene
         GameView view = loader.getController();
@@ -144,5 +151,15 @@ public class LoadGameView extends View {
         GameController controller = new GameController(view, id);
         // link the view to the controller to handle events
         view.setController(controller);
+    }
+
+    private void setDeleteBtnAction(ActionEvent event) {
+        Button source = (Button) event.getSource();
+        DatabaseConnector database = DatabaseConnector.getInstance();
+        database.connect();
+        database.delete((int) source.getUserData());
+        database.close();
+        VBox parent = (VBox) ((Button) event.getSource()).getParent().getParent();
+        panel.getChildren().remove(parent);
     }
 }

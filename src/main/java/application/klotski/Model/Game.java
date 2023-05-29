@@ -8,20 +8,22 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
+import static application.klotski.Model.Puzzle.CONFIG_EXTENSION;
+import static application.klotski.Model.Puzzle.IMG_EXTENSION;
+
 public class Game {
-    // static instance of this class to implement Singleton pattern
+
     private static Game game;
 
+    private int id;
     private int moveCounter;
-    private Puzzle puzzle;
+    private Puzzle config;
     private final ArrayList<Position> empties = new ArrayList<>();
     private History history;
-    private int id;
+    private static final Position win = new Position(1, 3);
 
-    // private main constructor to prevent multiple objects of type Game
     private Game() {}
 
-    // static method to implement Singleton pattern
     public static Game getInstance() {
         if (game == null)
             game = new Game();
@@ -30,15 +32,15 @@ public class Game {
     }
 
     public void init(Puzzle config) {
-        puzzle = config;
+        this.config = config;
         id = 0;
         moveCounter = 0;
-        initializeEmpties();
         initializeHistory();
+        initializeEmpties();
     }
 
-    public void setMoveCounter(int index) {
-        this.moveCounter = index;
+    public void setMoveCounter(int count) {
+        this.moveCounter = count;
     }
 
     public int getMoveCount() {
@@ -50,43 +52,23 @@ public class Game {
     }
 
     public Puzzle getPuzzle() {
-        return puzzle;
+        return config;
     }
 
     public int getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(int id) {
         this.id = Math.max(0, id);
     }
 
-    public String getInitialConfigToken() {
-        return history.getInitialConfigToken();
-    }
-
-    public String getInitialConfigFile() {
-        if (puzzle instanceof FilePuzzle filePuzzle) {
-            return filePuzzle.getFileName();
-        }
-        return "";
-    }
-
-    public String getInitialConfigImg() {
-        if (puzzle instanceof FilePuzzle filePuzzle) {
-            return filePuzzle.getImgFileName();
-        }
-        return "";
-    }
-
-    // member functions
-
     public void initializeHistory() {
-        history = new History(puzzle.createSnapshot());
+        history = new History(config.createSnapshot());
     }
 
     private void initializeEmpties() {
-        if (this.puzzle == null)
+        if (this.config == null)
             return;
 
         for (int i = 0; i < Position.NUM_ROWS; i++) {
@@ -95,7 +77,7 @@ public class Game {
             }
         }
 
-        for (Piece piece : puzzle.getPieces()) {
+        for (Piece piece : config.getPieces()) {
             empties.removeAll(piece.getOccupiedPositions());
         }
     }
@@ -110,7 +92,7 @@ public class Game {
     }
 
     private boolean isMovable(Piece piece, Direction direction) {
-        Piece shadow = new Piece(piece);
+        Piece shadow = new Piece(piece.getType(), new Position(piece.getLocation()));
 
         empties.addAll(piece.getOccupiedPositions());
         shadow.move(direction);
@@ -127,7 +109,7 @@ public class Game {
     }
 
     public void addSnapshot() {
-        history.add(puzzle.createSnapshot());
+        history.add(config.createSnapshot());
     }
 
     public Puzzle undo() {
@@ -152,12 +134,16 @@ public class Game {
         return history.isRedoAllowed();
     }
 
+    public boolean isGameOver() {
+        return config.getMainLocation().equals(win);
+    }
+
     private Piece getPiece(Position location) {
-        return puzzle.getPiece(location);
+        return config.getPiece(location);
     }
 
     public void reset() {
-        puzzle.reset();
+        config.reset();
         moveCounter = 0;
         initializeEmpties();
         initializeHistory();
@@ -169,19 +155,21 @@ public class Game {
 
     public void upload(String filename, int index) {
         ArrayList<Snapshot> snapshots = new ArrayList<>();
-        File history = new File(Objects.requireNonNull(KlotskiApplication.class.getResource("data/saves/history/")).getFile() + filename);
+        File history = new File(
+                Objects.requireNonNull(KlotskiApplication.class.getResource("data/saves/history/")).getFile() + filename
+        );
 
         Scanner fileReader;
 
         try {
             fileReader = new Scanner(history);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("The specified could not be found: " + e);
+            throw new RuntimeException("The specified file could not be found: " + e);
         }
 
         while (fileReader.hasNextLine()) {
             String token = fileReader.nextLine();
-            snapshots.add(new Snapshot(this.puzzle, token));
+            snapshots.add(new Snapshot(config, token));
         }
 
         this.history.upload(snapshots, index);

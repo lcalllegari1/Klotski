@@ -5,10 +5,8 @@ import application.klotski.Model.Piece;
 import application.klotski.Model.Position;
 import application.klotski.Model.Puzzle;
 import application.klotski.Model.Type;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -22,28 +20,44 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.event.ActionEvent;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.net.URL;
+
+import static application.klotski.Model.Type.*;
 
 public class View {
-    protected static final String FXML_PATH = "/application/klotski/FXML/";
-    public void switchScene(ActionEvent event, FXMLLoader scene_loader) throws IOException {
+    public static final String FXML_DIR_PATH = "/application/klotski/FXML/";
+
+    private static final int SNAP_SIZE = 650;
+
+    /**
+     * Switches to a new scene.
+     * @param event the event that causes the scene switch.
+     * @param loader the provider of the new scene.
+     */
+    public static void switchScene(ActionEvent event, FXMLLoader loader) {
         // scene loading
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(scene_loader.load());
-        scene.getStylesheets().add(Objects.requireNonNull(KlotskiApplication.class.getResource("style/style.css")).toExternalForm());
+        Scene scene = null;
+        try {
+            scene = new Scene(loader.load());
+            URL style = KlotskiApplication.class.getResource(
+                    "/application/klotski/style/style.css");
+            scene.getStylesheets().add(style != null ? style.toExternalForm() : null);
+        } catch (IOException e) {
+            System.out.println("Could not switch to the desired scene: " + e.getMessage());
+        }
 
         // stage config
-        stage.setResizable(false);
-        stage.setTitle("KLOTSKI");
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
-        stage.show();
     }
 
-    public static WritableImage createImg(Puzzle puzzle) {
-        // create new grid
+    public static WritableImage createImg(Puzzle config) {
         GridPane grid = new GridPane();
+        grid.setHgap(15);
+        grid.setVgap(15);
 
         // config new grid (setting cols & rows)
         for (int i = 0; i < Position.NUM_ROWS; i++) {
@@ -53,34 +67,29 @@ public class View {
             grid.getColumnConstraints().add(new ColumnConstraints(100));
         }
 
-        grid.setHgap(15);
-        grid.setVgap(15);
-
-        for (Piece piece : puzzle.getPieces()) {
-            Rectangle rect = createImgRectangle(piece.getType());
+        for (Piece piece : config.getPieces()) {
+            Rectangle rect = createRect(piece.getType());
             GridPane.setConstraints(rect, piece.getLocation().getCol(), piece.getLocation().getRow());
             grid.getChildren().add(rect);
         }
 
-        // now we have a grid representing the current configuration
+
         Pane pane = new Pane(grid);
-        pane.setStyle("-fx-background-color: #08415C;");
+        pane.setStyle("-fx-background-color: #17255A;");
         double grid_width = (Position.NUM_COLS - 1) * 15 + (Position.NUM_COLS * 100);
         double grid_height = (Position.NUM_ROWS - 1) * 15 + (Position.NUM_ROWS * 100);
-        double hcenter = (650 - grid_width) / 2;
-        double vcenter = (650 - grid_height) / 2;
+        double hcenter = (SNAP_SIZE - grid_width) / 2;
+        double vcenter = (SNAP_SIZE - grid_height) / 2;
         grid.setLayoutX(hcenter);
         grid.setLayoutY(vcenter);
 
-        Scene scene = new Scene(pane, 650, 650);
-
-        WritableImage img = new WritableImage(650, 650);
+        new Scene(pane, SNAP_SIZE, SNAP_SIZE);
+        WritableImage img = new WritableImage(SNAP_SIZE, SNAP_SIZE);
         pane.snapshot(new SnapshotParameters(), img);
-
         return img;
     }
 
-    public static Rectangle createImgRectangle(Type type) {
+    public static Rectangle createRect(Type type) {
         int width = 0;
         int height = 0;
         switch (type) {
@@ -102,10 +111,12 @@ public class View {
             }
         }
 
-        Rectangle rect = new Rectangle(width, height, type == Type.MAIN ? Color.rgb(255, 111, 0) : Color.rgb(255, 222, 104));
+        Rectangle rect = new Rectangle(width, height, type == Type.MAIN ? Color.rgb(195, 66, 63) : Color.rgb(255, 222, 104));
+
         GridPane.setValignment(rect, VPos.TOP);
         GridPane.setHalignment(rect, HPos.LEFT);
 
         return rect;
     }
+
 }

@@ -4,31 +4,43 @@ import application.klotski.KlotskiApplication;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class DatabaseConnector {
 
     public record Record(
-            String name,
-            int move_count,
-            String init_config_token,
-            String init_config_file,
-            String init_config_img,
-            String curr_config_img,
-            String history_file
+       int id,
+       String date,
+       String name,
+       int move_count,
+       String config,
+       String history
     ) {}
 
-    private static final String DB_PATH = Objects.requireNonNull(KlotskiApplication.class.getResource("/application/klotski/data/database/")).getPath();
+    private static final String DB_PATH = Objects.requireNonNull(
+            KlotskiApplication.class.getResource("/application/klotski/data/database/")
+    ).getPath();
     private static final String DB_NAME = "klotski.db";
     private static final String DB_PREFIX = "jdbc:sqlite:";
 
+    private static DatabaseConnector connector;
     private Connection connection = null;
+
+    private DatabaseConnector() {}
+
+    public static DatabaseConnector getInstance() {
+        if (connector == null)
+            connector = new DatabaseConnector();
+
+        return connector;
+    }
 
     public void connect() {
         try {
             if (connection == null || connection.isClosed()) {
-                connection = DriverManager.getConnection(DB_PREFIX + DB_PATH + DB_NAME);
+                connection = DriverManager.getConnection(
+                        DB_PREFIX + DB_PATH + DB_NAME
+                );
             }
         } catch (SQLException e) {
             System.out.println("Could not connect to database." + e.getMessage());
@@ -49,102 +61,106 @@ public class DatabaseConnector {
         String query = "SELECT 1 FROM Matches WHERE id = ?";
 
         try {
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, id);
-            ResultSet res = statement.executeQuery();
-
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, id);
+            ResultSet res = stm.executeQuery();
             return res.getInt(1) == 1;
         } catch (SQLException e) {
-            throw new RuntimeException();
+            System.out.println("Could not fetch the information from the database: " + e.getMessage());
+            return false;
         }
     }
 
     public int createRecord(Record record) {
-        String query = "INSERT INTO Matches (name, move_count, init_config_token, init_config_file, init_config_img, curr_config_img, history_file) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, record.name());
-            statement.setInt(2, record.move_count());
-            statement.setString(3, record.init_config_token());
-            statement.setString(4, record.init_config_file());
-            statement.setString(5, record.init_config_img());
-            statement.setString(6, record.curr_config_img());
-            statement.setString(7, record.history_file());
+        String query = "INSERT INTO Matches (date, name, move_count, config, history) VALUES (?, ?, ?, ?, ?)";
 
-            statement.executeUpdate();
-            return statement.getGeneratedKeys().getInt(1);
+        try {
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setString(1, record.date);
+            stm.setString(2, record.name);
+            stm.setInt(3, record.move_count);
+            stm.setString(4, record.config);
+            stm.setString(5, record.history);
+            stm.executeUpdate();
+            return stm.getGeneratedKeys().getInt(1);
         } catch (SQLException e) {
-            System.out.println("Could not create a new record." + e.getMessage());
+            System.out.println("Could not create a new record:" + e.getMessage());
+            return 0;
         }
-        return 0;
     }
 
     public Record fetch(int id) {
         String query = "SELECT * FROM Matches WHERE id = ?";
         try {
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, id);
-
-            ResultSet res = statement.executeQuery();
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, id);
+            ResultSet res = stm.executeQuery();
             return new Record(
+                    res.getInt("id"),
+                    res.getString("date"),
                     res.getString("name"),
                     res.getInt("move_count"),
-                    res.getString("init_config_token"),
-                    res.getString("init_config_file"),
-                    res.getString("init_config_img"),
-                    res.getString("curr_config_img"),
-                    res.getString("history_file"));
-
+                    res.getString("config"),
+                    res.getString("history")
+            );
         } catch (SQLException e) {
-            System.out.println("Could not fetch the specified record.");
+            System.out.println("Could not create a new record:" + e.getMessage());
+            return null;
         }
-        return null;
     }
 
-    // get all the records in the database
-    public HashMap<Integer, Record> fetch() {
-        HashMap<Integer, Record> records = new HashMap<>();
+    public ArrayList<Record> fetch() {
+        ArrayList<Record> records = new ArrayList<>();
         String query = "SELECT * FROM Matches";
+
         try {
-            Statement statement = connection.createStatement();
-            ResultSet res = statement.executeQuery(query);
+            Statement stm = connection.createStatement();
+            ResultSet res = stm.executeQuery(query);
 
             while (res.next()) {
-                Record record = new Record(
-                        res.getString("name"),
-                        res.getInt("move_count"),
-                        res.getString("init_config_token"),
-                        res.getString("init_config_file"),
-                        res.getString("init_config_img"),
-                        res.getString("curr_config_img"),
-                        res.getString("history_file")
-                );
-                records.put(res.getInt("id"), record);
+                records.add(new Record(
+                    res.getInt("id"),
+                    res.getString("date"),
+                    res.getString("name"),
+                    res.getInt("move_count"),
+                    res.getString("config"),
+                    res.getString("history")
+                ));
             }
             return records;
         } catch (SQLException e) {
-            System.out.println("Could not fetch the data.");
+            System.out.println("Could not fetch data from the database");
+            return null;
         }
-        // then the query was not completed
-        return null;
     }
 
-    public boolean update(int id, Record record) {
-        String query = "UPDATE Matches SET name = ?, move_count = ?, curr_config_img = ?, history_file = ? WHERE id = ?";
+    public boolean update(int id, String date, int move_count) {
+        String query = "UPDATE Matches SET date = ?, move_count = ? WHERE id = ?";
+
         try {
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, record.name());
-            statement.setInt(2, record.move_count());
-            statement.setString(3, record.curr_config_img());
-            statement.setString(4, record.history_file());
-            statement.setInt(5, id);
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setString(1, date);
+            stm.setInt(2, move_count);
+            stm.setInt(3, id);
 
-            return statement.executeUpdate() != 0;
+            return stm.executeUpdate() != 0;
         } catch (SQLException e) {
-            System.out.println("Could not update the specified record." + e.getMessage());
+            System.out.println("Could not update the specified record: " + e.getMessage());
+            return false;
         }
-
-        // exception caught, thus something went wrong
-        return false;
     }
+
+    public boolean delete(int id) {
+        String query = "DELETE FROM Matches WHERE id = ?";
+        try {
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, id);
+
+            return stm.executeUpdate() != 0;
+        } catch (SQLException e) {
+            System.out.println("Could not delete the specified record:" + e.getMessage());
+            return false;
+        }
+    }
+
 }

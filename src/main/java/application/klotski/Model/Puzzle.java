@@ -1,18 +1,38 @@
 package application.klotski.Model;
 
+import application.klotski.KlotskiApplication;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
-public class Puzzle {
-    protected final ArrayList<Piece> pieces = new ArrayList<>();
+import static application.klotski.Controller.SaveController.*;
 
-    public void addPiece(Piece piece) {
-        if (piece != null)
-            pieces.add(piece);
+public class Puzzle {
+    public static final String CONFIG_DIR_PATH = "/application/klotski/data/configurations/";
+    public static final String IMG_DIR_PATH = "/application/klotski/assets/imgs/configurations/";
+    public static final String CONFIG_EXTENSION = ".dat";
+    public static final String IMG_EXTENSION = ".png";
+
+    private final ArrayList<Piece> pieces;
+    private final String name;
+
+    public Puzzle(String name) {
+        this.pieces = new ArrayList<>();
+        this.name = name;
+
+        // fill the arraylist with pieces
+        read();
     }
 
     public ArrayList<Piece> getPieces() {
         return pieces;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Piece getPiece(Position location) {
@@ -21,13 +41,62 @@ public class Puzzle {
                 return piece;
             }
         }
+        return null;
+    }
 
-        // unreachable code
+    private void read() {
+        Scanner fileReader;
+        File file = new File(
+                Objects.requireNonNull(KlotskiApplication.class.getResource(CONFIG_DIR_PATH + name + CONFIG_EXTENSION)).getPath()
+        );
+
+        try {
+            fileReader = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            System.out.println("The specified file could not be found: " + e.getMessage());
+            return;
+        }
+
+        while (fileReader.hasNextLine()) {
+            // read and parse the next line of the file
+            Scanner lineReader = new Scanner(fileReader.nextLine());
+            Type type = Type.valueOf(lineReader.next());
+            Position location = getLocation(lineReader.next());
+
+            pieces.add(new Piece(type, location));
+        }
+    }
+
+    private Position getLocation(String location) {
+        String trimmed = location.substring(1, location.length() - 1);
+        String[] parts = trimmed.split(",");
+
+        int col = Integer.parseInt(parts[0]);
+        int row = Integer.parseInt(parts[1]);
+
+        return new Position(col, row);
+    }
+
+    public Position getMainLocation() {
+        for (Piece piece : pieces) {
+            if (piece.getType() == Type.MAIN)
+                return piece.getLocation();
+        }
         return null;
     }
 
     public void reset() {
         pieces.clear();
+        read();
+    }
+
+    protected String createToken() {
+        String delim = ";";
+        StringBuilder token = new StringBuilder();
+        for (Piece piece : pieces) {
+            token.append(piece.getType()).append(":").append(piece.getLocation()).append(delim);
+        }
+        return token.toString();
     }
 
     public Snapshot createSnapshot() {
@@ -41,48 +110,38 @@ public class Puzzle {
         reader.useDelimiter(";");
 
         while (reader.hasNext()) {
-            String curr = reader.next();
+            Scanner decoder = new Scanner(reader.next());
+            decoder.useDelimiter(":");
 
-            Scanner encoder = new Scanner(curr);
-            encoder.useDelimiter(":");
+            Type type = Type.valueOf(decoder.next());
+            Position location = getLocation(decoder.next());
 
-            Type type = getType(encoder.next());
-            Position location = getPosition(encoder.next());
-
-            // it is guaranteed to be defined, since the token is itself created
-            // by the class using the same format.
             pieces.add(new Piece(type, location));
         }
     }
 
-    protected String createToken() {
-        String delim = ";";
-        StringBuilder token = new StringBuilder();
-        for (Piece piece : pieces) {
-            token.append(piece.getType()).append(":").append(piece.getLocation()).append(delim);
-        }
-        return token.toString();
-    }
+    public static String getTokenAt(int index, String filename) {
+        File history = new File(Objects.requireNonNull(
+                KlotskiApplication.class.getResource(SAVES_DIR_PATH + HISTORY_DIR_NAME)
+        ).getFile() + filename);
 
-    protected Type getType(String type) {
-        switch (type) {
-            case "MAIN" -> { return Type.MAIN; }
-            case "WIDE" -> { return Type.WIDE; }
-            case "TALL" -> { return Type.TALL; }
-            case "SQUARE" -> { return Type.SQUARE; }
+        Scanner fileReader;
+        try {
+            fileReader = new Scanner(history);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("The specified file could not be found: " + e);
         }
 
+        int count = 0;
+        String token = null;
+        while (fileReader.hasNextLine()) {
+            token = fileReader.nextLine();
+            if (count == index) {
+                return token;
+            }
+            count++;
+        }
+        // unreachable code
         return null;
     }
-
-    protected Position getPosition(String position) {
-        String trimmed = position.substring(1, position.length() - 1);
-        String[] parts = trimmed.split(",");
-
-        int col = Integer.parseInt(parts[0]);
-        int row = Integer.parseInt(parts[1]);
-
-        return new Position(col, row);
-    }
-
 }

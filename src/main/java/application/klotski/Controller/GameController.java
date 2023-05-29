@@ -1,17 +1,16 @@
 package application.klotski.Controller;
 
-import application.klotski.KlotskiApplication;
 import application.klotski.Model.*;
 import application.klotski.View.GameView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 
-import java.io.File;
-import java.util.Objects;
-
 public class GameController {
+
     private record MouseInput(double x, double y, MouseEvent event) {}
+
+    private final SaveController saveController = new SaveController();
 
     private MouseInput mouseInput;
     private final Game game;
@@ -21,42 +20,52 @@ public class GameController {
         this.view = view;
         this.game = Game.getInstance();
 
-        DatabaseConnector database = new DatabaseConnector();
+        DatabaseConnector database = DatabaseConnector.getInstance();
         database.connect();
         DatabaseConnector.Record record = database.fetch(id);
-
-        FilePuzzle puzzle = new FilePuzzle(
-                new File(Objects.requireNonNull(KlotskiApplication.class.getResource("/application/klotski/data/configurations/")).getFile() + record.init_config_file()),
-                record.init_config_img().substring(0, record.init_config_img().lastIndexOf(".") + 1)
+        // get the file to read the configuration
+        Puzzle config = new Puzzle(record.name());
+        config.restoreSnapshot(
+                Puzzle.getTokenAt(record.move_count(), record.history())
         );
-
-        puzzle.restoreSnapshot(LoadGameController.getCurrentConfigToken(record.move_count(), record.history_file()));
-        game.init(puzzle);
-        game.upload(record.history_file(), record.move_count());
-        game.setId(id);
-        game.setMoveCounter(record.move_count());
-        this.view.displayConfig(puzzle);
-        this.view.updateMoveCounter(game.getMoveCount());
-        if (game.isUndoAllowed()) {
-            view.enableUndoBtn();
-        }
-        if (game.isRedoAllowed()) {
-            view.enableRedoBtn();
-        }
+        load(record.id(), config, record.history(), record.move_count());
         database.close();
     }
 
-    public GameController(GameView view, Puzzle puzzle) {
+    public GameController(GameView view, Puzzle config) {
         this.view = view;
         this.game = Game.getInstance();
 
-        load(puzzle);
+        load(config);
     }
 
     private void load(Puzzle config) {
         game.init(config);
-        view.displayConfig(config);
-        view.updateMoveCounter(game.getMoveCount());
+        view.update(config, game.getMoveCount());
+    }
+
+    private void load(int id, Puzzle config, String history, int count) {
+        game.init(config);
+        game.setId(id);
+        game.upload(history, count);
+        game.setMoveCounter(count);
+
+        if (game.isUndoAllowed()) {
+            view.enableUndoBtn();
+        } else {
+            view.disableUndoBtn();
+        }
+        if (game.isRedoAllowed()) {
+            view.enableRedoBtn();
+        } else {
+            view.disableRedoBtn();
+        }
+        if (game.isGameOver()) {
+           view.displayWinMessage();
+        }
+
+        view.display(config);
+        view.updateMoveCounter(count);
     }
 
     public void mousePressedEvent(MouseEvent event) {
@@ -64,21 +73,26 @@ public class GameController {
     }
 
     public void mouseReleasedEvent(MouseEvent event) {
-        // input parsing
         double deltaX = event.getSceneX() - mouseInput.x;
         double deltaY = event.getSceneY() - mouseInput.y;
-        Rectangle source = (Rectangle) mouseInput.event.getSource();
 
-        Position origin = new Position(GridPane.getColumnIndex(source), GridPane.getRowIndex(source));
+        Rectangle source = (Rectangle) mouseInput.event.getSource();
+        Position origin = new Position(
+                GridPane.getColumnIndex(source),
+                GridPane.getRowIndex(source)
+        );
         Direction direction = getDirection(deltaX, deltaY);
 
         if (direction != null) {
+            // then there is a valid direction, thus try to move the piece
             Position target = game.move(origin, direction);
 
             if (target.equals(origin)) {
-                // the piece did not actually move
+                // then it means the piece did not actually move
                 view.displayMoveDeniedAnimation(source, direction);
             } else {
+                // then the piece changed its location, thus update game & view
+
                 // game updates
                 game.addSnapshot();
                 game.incrementMoveCount();
@@ -87,38 +101,19 @@ public class GameController {
                 view.updateMoveCounter(game.getMoveCount());
                 view.enableUndoBtn();
                 view.disableRedoBtn();
+                view.enableSaveBtn();
 
-                GridPane.setConstraints(source, target.getCol(), target.getRow());
+                GridPane.setConstraints(
+                        source, target.getCol(), target.getRow()
+                );
+
+                if (game.isGameOver()) {
+                    view.displayWinMessage();
+                } else {
+                    view.hideWinMessage();
+                }
             }
         }
-    }
-
-    public void undoActionHandler() {
-        Puzzle puzzle = game.undo();
-
-        if (!game.isUndoAllowed())
-            view.disableUndoBtn();
-
-        view.update(puzzle, game.getMoveCount());
-    }
-
-    public void redoActionHandler() {
-        Puzzle puzzle = game.redo();
-
-        if (!game.isRedoAllowed())
-            view.disableRedoBtn();
-
-        view.update(puzzle, game.getMoveCount());
-    }
-
-    public void resetActionHandler() {
-        game.reset();
-        view.update(game.getPuzzle(), 0);
-    }
-
-    public void saveGame() {
-        boolean saved = SaveGameController.save();
-        System.out.println(saved ? "saved" : "not saved");
     }
 
     private Direction getDirection(double deltaX, double deltaY) {
@@ -131,4 +126,58 @@ public class GameController {
             return deltaY > 0 ? Direction.DOWN : Direction.UP;
         }
     }
+
+    public void undoActionHandler() {
+        Puzzle puzzle = game.undo();
+
+        if (!game.isUndoAllowed())
+            view.disableUndoBtn();
+
+        if (game.isGameOver()) {
+            view.displayWinMessage();
+        } else {
+            view.hideWinMessage();
+        }
+
+        view.enableSaveBtn();
+        view.enableRedoBtn();
+        view.update(puzzle, game.getMoveCount());
+    }
+
+    public void redoActionHandler() {
+        Puzzle puzzle = game.redo();
+
+        if (!game.isRedoAllowed())
+            view.disableRedoBtn();
+
+        if (game.isGameOver()) {
+            view.displayWinMessage();
+        } else {
+            view.hideWinMessage();
+        }
+
+        view.enableSaveBtn();
+        view.enableUndoBtn();
+        view.update(puzzle, game.getMoveCount());
+    }
+
+    public void resetActionHandler() {
+        game.reset();
+        view.disableUndoBtn();
+        view.disableRedoBtn();
+        view.disableSaveBtn();
+        view.hideWinMessage();
+        view.update(game.getPuzzle(), 0);
+    }
+
+    public void save() {
+        if (saveController.save()) {
+            System.out.println("saved");
+            view.disableSaveBtn();
+        } else {
+            System.out.println("not saved");
+        }
+    }
+
+
 }

@@ -61,12 +61,7 @@ public class History {
     public void upload(ArrayList<Snapshot> history, int index) {
         this.history = history;
         this.index = index;
-        System.out.println("index: " + index + " size: " + history.size());
         this.max = index == (history.size() - 1) ? -1 : history.size() - 1;
-        System.out.println(max);
     }
 
-    public String getInitialConfigToken() {
-        return history.get(0).token();
-    }
 }

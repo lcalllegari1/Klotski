@@ -9,7 +9,7 @@ public enum Type {
     public final int width;
     public final int height;
 
-    private Type(int id) {
+    Type(int id) {
         width = getWidth(id);
         height = getHeight(id);
     }

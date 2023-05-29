@@ -1,8 +1,6 @@
 package application.klotski.View;
 
-import application.klotski.Controller.DatabaseConnector;
 import application.klotski.Controller.GameController;
-import application.klotski.Controller.SaveGameController;
 import application.klotski.KlotskiApplication;
 import application.klotski.Model.Direction;
 import application.klotski.Model.Piece;
@@ -13,27 +11,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+import static application.klotski.View.View.FXML_DIR_PATH;
 
-public class GameView extends View {
-    // animations
-    private final TranslateTransition xMoveDeniedAnimation = new TranslateTransition(Duration.millis(30));
-    private final TranslateTransition yMoveDeniedAnimation = new TranslateTransition(Duration.millis(30));
-
-    private static final int MIN_LENGTH = 95;
-    private static final int DEFAULT_MULTIPLIER = 100;
+public class GameView {
 
     private GameController gameController;
 
@@ -45,12 +32,14 @@ public class GameView extends View {
         initializeAnimations();
     }
 
-    // Event handling
     @FXML
     private GridPane grid;
 
     @FXML
-    private Label move_counter_lbl;
+    private Label move_count_lbl;
+
+    @FXML
+    private Label win_lbl;
 
     @FXML
     private Button redo_btn;
@@ -59,87 +48,34 @@ public class GameView extends View {
     private Button undo_btn;
 
     @FXML
+    private Button save_btn;
+
+    @FXML
     private void backToMenu(ActionEvent event) {
-        // switch to PuzzleConfigurationMenuView scene
-        SaveGameController.closeConnection();
-        FXMLLoader menuLoader = new FXMLLoader(KlotskiApplication.class.getResource(FXML_PATH + "MenuView.fxml"));
-        try {
-            switchScene(event, menuLoader);
-        } catch (IOException e) {
-            throw new RuntimeException("RuntimeException thrown in MenuView.switchScene(): " + e);
-        }
+        FXMLLoader loader = new FXMLLoader(
+                KlotskiApplication.class.getResource(FXML_DIR_PATH + "MenuView.fxml")
+        );
+        View.switchScene(event, loader);
     }
 
     @FXML
-    private void nextMove(ActionEvent event) {
-        // TODO
-    }
-
-    @FXML
-    void resetPuzzle(ActionEvent event) {
-        gameController.resetActionHandler();
-        disableUndoBtn();
-        disableRedoBtn();
-    }
-
-    @FXML
-    private void saveGame(ActionEvent event) {
-        gameController.saveGame();
-    }
-
-    @FXML
-    void undo(ActionEvent event) {
-        enableRedoBtn();
+    private void undo(ActionEvent event) {
         gameController.undoActionHandler();
     }
 
     @FXML
-    void redo(ActionEvent event) {
-        enableUndoBtn();
+    private void redo(ActionEvent event) {
         gameController.redoActionHandler();
     }
 
-
-    // view updates member functions
-
-    private String getCurrentTime() {
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd_HH-mm-ss");
-        return formatter.format(now);
+    @FXML
+    private void reset(ActionEvent event) {
+        gameController.resetActionHandler();
     }
 
-    public void displayConfig(Puzzle config) {
-        for (Piece piece : config.getPieces()) {
-            Rectangle rect = createRect(piece);
-            displayRect(rect);
-        }
-    }
-
-    private Rectangle createRect(Piece piece) {
-        int width = convertToDisplayedDimension(piece.getWidth());
-        int height = convertToDisplayedDimension(piece.getHeight());
-
-        Rectangle rect = new Rectangle(width, height, piece.getType() == Type.MAIN ? Color.rgb(255, 111, 0) : Color.rgb(255, 222, 104));
-        rect.setStroke(piece.getType() == Type.MAIN ? Color.rgb(255, 91, 15) : Color.rgb(255, 214, 155));
-        rect.getStyleClass().add("game_piece");
-
-        GridPane.setMargin(rect, new Insets(2.5, 2.5, 2.5, 2.5));
-        GridPane.setHalignment(rect, HPos.LEFT);
-        GridPane.setValignment(rect, VPos.TOP);
-        GridPane.setConstraints(rect, piece.getLocation().getCol(), piece.getLocation().getRow());
-
-        rect.setOnMousePressed(mouseEvent -> {gameController.mousePressedEvent(mouseEvent);});
-        rect.setOnMouseReleased(mouseEvent -> {gameController.mouseReleasedEvent(mouseEvent);});
-
-        return rect;
-    }
-
-    private int convertToDisplayedDimension(int length) {
-        return MIN_LENGTH + (DEFAULT_MULTIPLIER * (length - 1));
-    }
-
-    private void displayRect(Rectangle rect) {
-        grid.getChildren().add(rect);
+    @FXML
+    private void save(ActionEvent event) {
+        gameController.save();
     }
 
     public void enableUndoBtn() {
@@ -158,21 +94,74 @@ public class GameView extends View {
         redo_btn.setDisable(true);
     }
 
-    public void updateMoveCounter(int count) {
-        move_counter_lbl.setText(String.valueOf(count));
+    public void disableSaveBtn() {
+        save_btn.setDisable(true);
     }
 
-    public void clearConfig() {
+    public void enableSaveBtn() {
+        save_btn.setDisable(false);
+    }
+
+    public void updateMoveCounter(int count) {
+        move_count_lbl.setText(String.valueOf(count));
+    }
+
+    public void update(Puzzle config, int count) {
+        clear();
+        updateMoveCounter(count);
+        display(config);
+    }
+
+    private void clear() {
         grid.getChildren().clear();
     }
 
-    public void update(Puzzle puzzle, int moveCount) {
-        clearConfig();
-        updateMoveCounter(moveCount);
-        displayConfig(puzzle);
+    public void display(Puzzle config) {
+        for (Piece piece : config.getPieces()) {
+            grid.getChildren().add(createRect(piece));
+        }
     }
 
-    // Animation configuration
+    private Rectangle createRect(Piece piece) {
+        int spacing = 5;
+        int size = 100;
+        Rectangle rect = new Rectangle(
+                piece.getWidth() * size + ((piece.getWidth() - 1) * spacing),
+                piece.getHeight() * size + ((piece.getHeight() - 1) * spacing)
+        );
+        rect.getStyleClass().add(
+                piece.getType() == Type.MAIN ? "main_piece" : "piece"
+        );
+
+        GridPane.setHalignment(rect, HPos.LEFT);
+        GridPane.setValignment(rect, VPos.TOP);
+        GridPane.setConstraints(
+                rect,
+                piece.getLocation().getCol(),
+                piece.getLocation().getRow()
+        );
+
+        rect.setOnMousePressed(
+                mouseEvent -> gameController.mousePressedEvent(mouseEvent)
+        );
+        rect.setOnMouseReleased(
+                mouseEvent -> gameController.mouseReleasedEvent(mouseEvent)
+        );
+
+        return rect;
+    }
+
+    public void displayWinMessage() {
+        win_lbl.setVisible(true);
+    }
+
+    public void hideWinMessage() {
+        win_lbl.setVisible(false);
+    }
+
+    // animations
+    private final TranslateTransition xMoveDeniedAnimation = new TranslateTransition(Duration.millis(30));
+    private final TranslateTransition yMoveDeniedAnimation = new TranslateTransition(Duration.millis(30));
 
     private void initializeAnimations() {
         xMoveDeniedAnimation.setFromX(-3);

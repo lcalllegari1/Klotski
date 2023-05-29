@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #E6FDFF;" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.klotski.View.PuzzleSelectionView">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="wallpaper" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.klotski.View.PuzzleSelectionView">
    <children>
-      <Label layoutX="201.0" layoutY="14.0" text="CHOOSE PUZZLE">
+      <Text id="main_title" layoutX="238.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CHOOSE PUZZLE">
          <font>
-            <Font name="Footlight MT Light" size="55.0" />
+            <Font name="Arial Bold" size="38.0" />
          </font>
-      </Label>
-      <Pane fx:id="puzzle_pane" layoutX="60.0" layoutY="87.0" prefHeight="503.0" prefWidth="680.0" />
+      </Text>
+      <Pane fx:id="puzzle_pane" layoutX="75.0" layoutY="59.0" prefHeight="520.0" prefWidth="650.0" />
    </children>
 </Pane>

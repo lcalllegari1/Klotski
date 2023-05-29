@@ -1,21 +1,14 @@
 package application.klotski.Model;
 
-import javafx.scene.paint.Color;
 import java.util.ArrayList;
 
 public class Piece {
 
-    // data members
     private final Type type;
-
     private final int height;
     private final int width;
-
     private final Position location;
 
-    // constructors
-
-    // main constructor
     public Piece(Type type, Position location) {
         this.type = type;
         this.location = location;
@@ -23,13 +16,6 @@ public class Piece {
         this.width = type.width;
     }
 
-    // copy constructor
-    // it assures that the location data members it correctly passed as a copy.
-    public Piece(Piece piece) {
-        this(piece.type, new Position(piece.location));
-    }
-
-    // getters
     public Type getType() {
         return type;
     }
@@ -46,7 +32,6 @@ public class Piece {
         return location;
     }
 
-    // member functions
     public Position move(Direction direction) {
         switch (direction) {
             case UP -> location.decrementRow();
@@ -68,6 +53,4 @@ public class Piece {
         }
         return positions;
     }
-
 }
-
