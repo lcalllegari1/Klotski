@@ -48,6 +48,9 @@ public class GameView {
     private Button undo_btn;
 
     @FXML
+    private Button next_move_btn;
+
+    @FXML
     private Button save_btn;
 
     @FXML
@@ -78,6 +81,11 @@ public class GameView {
         gameController.save();
     }
 
+    @FXML
+    private void nextMove(ActionEvent event) {
+        gameController.nextMoveActionHandler();
+    }
+
     public void enableUndoBtn() {
         undo_btn.setDisable(false);
     }
@@ -102,6 +110,14 @@ public class GameView {
         save_btn.setDisable(false);
     }
 
+    public void disableNextMoveBtn() {
+        next_move_btn.setDisable(true);
+    }
+
+    public void enableNextMoveBtn() {
+        next_move_btn.setDisable(false);
+    }
+
     public void updateMoveCounter(int count) {
         move_count_lbl.setText(String.valueOf(count));
     }
@@ -117,6 +133,7 @@ public class GameView {
     }
 
     public void display(Puzzle config) {
+        clear();
         for (Piece piece : config.getPieces()) {
             grid.getChildren().add(createRect(piece));
         }

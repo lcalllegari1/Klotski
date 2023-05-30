@@ -109,8 +109,10 @@ public class GameController {
 
                 if (game.isGameOver()) {
                     view.displayWinMessage();
+                    view.disableNextMoveBtn();
                 } else {
                     view.hideWinMessage();
+                    view.enableNextMoveBtn();
                 }
             }
         }
@@ -135,8 +137,10 @@ public class GameController {
 
         if (game.isGameOver()) {
             view.displayWinMessage();
+            view.disableNextMoveBtn();
         } else {
             view.hideWinMessage();
+            view.enableNextMoveBtn();
         }
 
         view.enableSaveBtn();
@@ -152,8 +156,10 @@ public class GameController {
 
         if (game.isGameOver()) {
             view.displayWinMessage();
+            view.disableNextMoveBtn();
         } else {
             view.hideWinMessage();
+            view.enableNextMoveBtn();
         }
 
         view.enableSaveBtn();
@@ -167,6 +173,7 @@ public class GameController {
         view.disableRedoBtn();
         view.disableSaveBtn();
         view.hideWinMessage();
+        view.enableNextMoveBtn();
         view.update(game.getPuzzle(), 0);
     }
 
@@ -179,5 +186,40 @@ public class GameController {
         }
     }
 
+    public void nextMoveActionHandler() {
+        String next = NextMoveController.next(
+                game.getName(),
+                game.getCurrentToken()
+        );
+
+        if (!next.equals("NULL")) {
+            // then there is a valid next move
+            // now next represents the new configuration
+            game.setCurrentConfiguration(next);
+            // game updates
+            game.addSnapshot();
+            game.incrementMoveCount();
+
+            // view updates
+            view.updateMoveCounter(game.getMoveCount());
+            view.display(game.getPuzzle());
+            view.enableUndoBtn();
+            view.disableRedoBtn();
+            view.enableSaveBtn();
+
+            if (game.isGameOver()) {
+                view.displayWinMessage();
+                view.disableNextMoveBtn();
+            } else {
+                view.hideWinMessage();
+            }
+        } else {
+            // we could not find a suitable move, thus perform a random move
+            if (game.isUndoAllowed()) {
+                // perform a normal undo
+                undoActionHandler();
+            }
+        }
+    }
 
 }

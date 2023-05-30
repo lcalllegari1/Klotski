@@ -2,6 +2,7 @@ package application.klotski.View;
 
 import application.klotski.Controller.DatabaseConnector;
 import application.klotski.Controller.GameController;
+import application.klotski.Controller.SaveController;
 import application.klotski.KlotskiApplication;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -157,6 +158,8 @@ public class LoadGameView {
         Button source = (Button) event.getSource();
         DatabaseConnector database = DatabaseConnector.getInstance();
         database.connect();
+        DatabaseConnector.Record record = database.fetch((int) source.getUserData());
+        SaveController.delete(record.history(), record.config());
         database.delete((int) source.getUserData());
         database.close();
         VBox parent = (VBox) ((Button) event.getSource()).getParent().getParent();

@@ -82,6 +82,14 @@ public class Game {
         }
     }
 
+    public String getCurrentToken() {
+        return config.createToken();
+    }
+
+    public String getName() {
+        return config.getName();
+    }
+
     public Position move(Position origin, Direction direction) {
         Piece mover = getPiece(origin);
 
@@ -110,6 +118,11 @@ public class Game {
 
     public void addSnapshot() {
         history.add(config.createSnapshot());
+    }
+
+    public void setCurrentConfiguration(String next) {
+        config.restoreSnapshot(next);
+        initializeEmpties();
     }
 
     public Puzzle undo() {
@@ -174,4 +187,5 @@ public class Game {
 
         this.history.upload(snapshots, index);
     }
+
 }

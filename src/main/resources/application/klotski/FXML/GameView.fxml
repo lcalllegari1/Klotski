@@ -51,7 +51,7 @@
             <Font name="Arial Bold" size="19.0" />
          </font>
       </Button>
-      <Button focusTraversable="false" layoutX="512.0" layoutY="292.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="235.0" styleClass="game_btn" text="NEXT MOVE ?">
+      <Button fx:id="next_move_btn" focusTraversable="false" layoutX="512.0" layoutY="292.0" mnemonicParsing="false" onAction="#nextMove" prefHeight="50.0" prefWidth="235.0" styleClass="game_btn" text="NEXT MOVE ?">
          <font>
             <Font name="Arial Bold" size="19.0" />
          </font>

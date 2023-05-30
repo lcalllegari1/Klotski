@@ -132,4 +132,22 @@ public class SaveController {
         return formatter.format(now);
     }
 
+    public static void delete(String history, String img) {
+        File file = new File(Objects.requireNonNull(
+                KlotskiApplication.class.getResource(SAVES_DIR_PATH + HISTORY_DIR_NAME)
+        ).getPath() + history);
+
+        if (file.delete()) {
+            System.out.println("history deleted");
+        }
+
+        file = new File(Objects.requireNonNull(
+                KlotskiApplication.class.getResource(SAVES_DIR_PATH + IMGS_DIR_NAME)
+        ).getPath() + img);
+
+        if (file.delete()) {
+            System.out.println("img deleted");
+        }
+    }
+
 }

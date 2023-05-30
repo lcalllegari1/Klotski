@@ -90,7 +90,7 @@ public class Puzzle {
         read();
     }
 
-    protected String createToken() {
+    public String createToken() {
         String delim = ";";
         StringBuilder token = new StringBuilder();
         for (Piece piece : pieces) {
