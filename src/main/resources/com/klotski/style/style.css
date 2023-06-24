@@ -1,0 +1,90 @@
+@font-face {
+    font-family: "Rasa";
+    src: url("fonts/Rasa-Bold.ttf");
+}
+
+* {
+    -fx-font-family: Rasa;
+}
+
+#play_btn:hover {
+    -fx-text-fill: white;
+    -fx-font-size: 51;
+}
+
+#load_btn:hover {
+    -fx-text-fill: red;
+    -fx-font-size: 31;
+}
+
+.config_btn {
+    -fx-border-width: 4;
+    -fx-border-radius: 10;
+    -fx-pref-width: 165;
+    -fx-pref-height: 165;
+    -fx-cursor: hand;
+}
+
+.config_btn:hover {
+    -fx-border-color: red;
+}
+
+.game_btn {
+    -fx-background-color: #134EF2;
+    -fx-border-color: white;
+    -fx-border-width: 2;
+    -fx-border-radius: 15;
+    -fx-background-insets: 2;
+    -fx-background-radius: 15;
+    -fx-font-size: 22;
+}
+
+.game_btn:hover {
+    -fx-background-color: #4da7f5;
+    -fx-font-size: 22;
+}
+
+.piece {
+    -fx-arc-width: 30;
+    -fx-arc-height: 30;
+    -fx-fill: #ffdb36;
+    -fx-stroke: #f8ca5d;
+    -fx-stroke-width: 5;
+    -fx-stroke-type: inside;
+}
+
+.main_piece {
+    -fx-arc-width: 30;
+    -fx-arc-height: 30;
+    -fx-fill: #ff4d32;
+    -fx-stroke: #fc3d28;
+    -fx-stroke-width: 5;
+    -fx-stroke-type: inside;
+}
+
+.scroll_pane {
+    -fx-background-color: #ACD7FF;
+}
+
+.scroll_pane .viewport {
+    -fx-background-color: #ACD7FF;
+}
+
+.card_panel {
+    -fx-background-color: #ACD7FF;
+}
+
+.play_saved_game_btn {
+    -fx-background-color: #E6FDFF;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-family: "Rasa";
+    -fx-font-weight: bold;
+    -fx-font-size: 22;
+}
+
+
+.play_saved_game_btn:hover {
+    -fx-background-color: #BEFBFF;
+    -fx-cursor: hand;
+}

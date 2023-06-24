@@ -1,17 +1,17 @@
-module application.klotski {
+module com.klotski {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
     requires javafx.swing;
 
 
-    opens application.klotski to javafx.fxml;
-    opens application.klotski.Model to javafx.fxml;
-    opens application.klotski.View to javafx.fxml;
-    opens application.klotski.Controller to javafx.fxml;
+    opens com.klotski to javafx.fxml;
+    opens com.klotski.Model to javafx.fxml;
+    opens com.klotski.View to javafx.fxml;
+    opens com.klotski.Controller to javafx.fxml;
 
-    exports application.klotski;
-    exports application.klotski.Model;
-    exports application.klotski.View;
-    exports application.klotski.Controller;
+    exports com.klotski;
+    exports com.klotski.Model;
+    exports com.klotski.View;
+    exports com.klotski.Controller;
 }
