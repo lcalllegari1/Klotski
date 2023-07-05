@@ -1,0 +1,16 @@
+CREATE TABLE "Configs" (
+	"config_id"	INTEGER NOT NULL UNIQUE,
+	"token"	TEXT NOT NULL UNIQUE,
+	PRIMARY KEY("config_id")
+);
+
+CREATE TABLE "Matches" (
+	"match_id"	INTEGER NOT NULL UNIQUE,
+	"score"	INTEGER NOT NULL,
+	"date"	TEXT NOT NULL,
+	"history"	TEXT NOT NULL UNIQUE,
+	"img"	TEXT NOT NULL UNIQUE,
+	"config_id"	INTEGER NOT NULL,
+	FOREIGN KEY("config_id") REFERENCES "Configs"("config_id"),
+	PRIMARY KEY("match_id")
+);

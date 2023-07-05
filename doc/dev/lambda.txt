@@ -1,0 +1,40 @@
+import boto3
+import json
+import urllib.parse
+
+source = boto3.client('s3')
+
+def lambda_handler(event, context):
+    # setup the bucket
+    bucket = 'klotski'
+
+    # fetch the parameters
+    key = event['queryStringParameters']['config'] + ".dat"
+    token = urllib.parse.unquote(event['queryStringParameters']['token'])
+
+    tokens = get_config(bucket, key).splitlines(keepends=False)
+    index = search(token, tokens)
+    res = ''
+
+    if index != -1:
+        res = tokens[index + 1]
+    else:
+        res = 'NULL'
+
+
+    return {
+        'statusCode': 200,
+        'body': res
+    }
+
+def get_config(bucket, key):
+    # get the object file "key" from "bucket"
+    obj = source.get_object(Bucket=bucket, Key=key)
+    # decode and return the content
+    return obj['Body'].read().decode('utf-8')
+
+def search(token, tokens):
+    try:
+        return tokens.index(token)
+    except ValueError:
+        return -1
