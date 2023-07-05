@@ -5,8 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.crypto.Data;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -82,9 +83,7 @@ class SaveControllerTest {
         assertEquals(game.getScore(), result.score());
         assertEquals(game.getConfigId(), result.config_id());
 
-        database.connect();
-        database.deleteMatch(id);
-        database.close();
+        saver.delete(id);
     }
 
     @Test
@@ -111,11 +110,32 @@ class SaveControllerTest {
         database.close();
 
         File history = new File(saver.getHistory(), filename);
+        ArrayList<String> backup = new ArrayList<>();
+        Scanner reader;
+
+        try {
+            reader = new Scanner(history);
+            while (reader.hasNextLine()) {
+                backup.add(reader.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        }
 
         assertTrue(history.isFile());
 
         // delete the game
         saver.delete(game.getId());
+
+        history = new File(saver.getHistory(), filename);
+        try (Writer writer = new FileWriter(history)) {
+            for (String line : backup) {
+                writer.write(line);
+            }
+            writer.flush();
+        } catch (IOException e) {
+            System.out.println("IOException");
+        }
 
         // check the database does not contain the game anymore
         database.connect();

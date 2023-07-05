@@ -1,24 +1,26 @@
 package com.klotski.Controller;
 
-
-import com.klotski.KlotskiApplication;
 import com.klotski.Model.Direction;
 import com.klotski.Model.Game;
 import com.klotski.Model.Position;
 import com.klotski.Model.Puzzle;
 import com.klotski.View.GameView;
-import javafx.fxml.FXMLLoader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import org.mockito.*;
+
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class GameControllerTest {
 
     GameController controller;
     Game game = Game.getInstance();
+    @Mock
     GameView view;
     Puzzle puzzle;
 
@@ -26,6 +28,21 @@ class GameControllerTest {
     void setUp() throws IOException {
         puzzle = new Puzzle(8, "MAIN:(0,0);WIDE:(2,0);WIDE:(2,1);TALL:(0,3);TALL:(1,3);TALL:(3,3);SQUARE:(2,2);SQUARE:(2,3);SQUARE:(2,4);SQUARE:(3,2);");
         game.init(puzzle);
+        view = mock(GameView.class);
+        Mockito.doNothing().when(view).display(puzzle);
+        Mockito.doNothing().when(view).update(ArgumentMatchers.any(), ArgumentMatchers.anyInt());
+        Mockito.doNothing().when(view).setScore(ArgumentMatchers.anyInt());
+        Mockito.doNothing().when(view).disableNextMoveBtn();
+        Mockito.doNothing().when(view).disableRedoBtn();
+        Mockito.doNothing().when(view).disableUndoBtn();
+        Mockito.doNothing().when(view).disableSaveBtn();
+        Mockito.doNothing().when(view).enableSaveBtn();
+        Mockito.doNothing().when(view).enableUndoBtn();
+        Mockito.doNothing().when(view).enableRedoBtn();
+        Mockito.doNothing().when(view).enableSaveBtn();
+        Mockito.doNothing().when(view).enableNextMoveBtn();
+        Mockito.doNothing().when(view).displayWinMessage();
+        Mockito.doNothing().when(view).hideWinMessage();
         controller = new GameController(view, puzzle);
     }
 
@@ -88,21 +105,48 @@ class GameControllerTest {
 
     @Test
     void reset() {
+        game.move(new Position(0, 0), Direction.DOWN);
+        game.move(new Position(2, 0), Direction.LEFT);
+        game.move(new Position(1, 0), Direction.LEFT);
+        game.move(new Position(2, 1), Direction.UP);
+        game.move(new Position(2, 2), Direction.UP);
+        game.move(new Position(2, 1), Direction.RIGHT);
+        game.setScore(6);
 
-    }
-
-    @Test
-    void undo() {
-
-    }
-
-    @Test
-    void redo() {
-
+        controller.reset();
+        assertEquals(0, game.getScore());
+        assertEquals(puzzle.getConfigToken(), game.getCurrentToken());
+        assertFalse(game.isUndoAllowed());
+        assertFalse(game.isRedoAllowed());
     }
 
     @Test
     void nextMove() {
+        // setup to get a valid next move
 
+        game.move(new Position(0, 0), Direction.DOWN);
+        game.move(new Position(2, 0), Direction.LEFT);
+        game.move(new Position(1, 0), Direction.LEFT);
+        game.move(new Position(2, 1), Direction.UP);
+        game.move(new Position(2, 2), Direction.UP);
+        game.move(new Position(2, 1), Direction.RIGHT);
+        game.setScore(6);
+
+        controller.nextMove();
+        assertEquals(7, game.getScore());
+
+        game.reset();
+
+        // setup to get an invalid next move (meaning an undo takes place)
+        game.move(new Position(0, 0), Direction.DOWN);
+        game.move(new Position(2, 0), Direction.LEFT);
+        game.move(new Position(1, 0), Direction.LEFT);
+        game.move(new Position(2, 1), Direction.UP);
+        game.move(new Position(2, 2), Direction.UP);
+        game.move(new Position(3, 2), Direction.LEFT);
+        game.setScore(6);
+
+        controller.nextMove();
+        assertEquals(5, game.getScore());
     }
 }
