@@ -13,6 +13,9 @@ public class History {
         history.add(snapshot);
     }
 
+    // adds a new snapshot at the end of the history. If max is
+    // set to a valid index value, then all elements from index + 1
+    // to max have to be erased before the insertion.
     public void add(Snapshot snapshot) {
         if (max != -1) {
             history.subList(index + 1, max + 1).clear();

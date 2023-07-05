@@ -1,6 +1,7 @@
 package com.klotski.Model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Piece {
 
@@ -55,4 +56,11 @@ public class Piece {
         return positions;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Piece piece = (Piece) o;
+        return type == piece.type && position.equals(((Piece) o).getPosition());
+    }
 }

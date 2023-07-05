@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: #ACD7FF;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.klotski.View.GameView">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: #ACD7FF;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.klotski.View.GameView">
    <children>
       <Text fill="#1500f5" layoutX="358.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="KLOTSKI">
          <font>
@@ -94,7 +94,7 @@
             <Font name="Rasa Regular" size="30.0" />
          </font>
       </Label>
-      <Label fx:id="win_lbl" layoutX="155.0" layoutY="726.0" prefHeight="41.0" prefWidth="257.0" text="Puzzle completed!" visible="false">
+      <Label fx:id="win_lbl" layoutX="143.0" layoutY="726.0" prefHeight="53.0" prefWidth="296.0" text="Puzzle completed!" visible="false">
          <font>
             <Font name="Rasa Regular" size="36.0" />
          </font>

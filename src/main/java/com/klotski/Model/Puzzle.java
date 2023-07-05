@@ -34,8 +34,14 @@ public class Puzzle {
         return id;
     }
 
+    // returns the path of the initial configuration image
+    // that corresponds to this Puzzle's id.
     public String getPath() {
         return CONFIG_IMG_PATH + CONFIG_FILENAME + DELIM + id + CONFIG_IMG_EXTENSION;
+    }
+
+    public String getConfigToken() {
+        return this.config;
     }
 
     // Returns the Piece currently occupying the specified
@@ -86,6 +92,8 @@ public class Puzzle {
         return new Position(col, row);
     }
 
+    // returns the Position (up-left corner) of
+    // the main piece (Type.MAIN)
     public Position getMainPiecePosition() {
         for (Piece piece : pieces) {
             if (piece.getType() == Type.MAIN)
@@ -119,6 +127,9 @@ public class Puzzle {
         return token.toString();
     }
 
+    // returns the token at the specified index (line)
+    // in the file with the specified filename, assuming
+    // it is present in the corresponding folder.
     public static String getTokenAt(int index, String filename) {
         SaveController saver = new SaveController();
         File history = new File(saver.getHistory(), filename);

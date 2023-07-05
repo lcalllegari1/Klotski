@@ -131,8 +131,12 @@ public class SaveController {
     }
 
     private void writeImg(String filename, Puzzle config) {
-        WritableImage image = View.createImg(config);
-
+        WritableImage image = null;
+        try {
+            image = View.createImg(config);
+        } catch (NullPointerException e) {
+            return;
+        }
         File file = new File(imgs, filename);
 
         try {

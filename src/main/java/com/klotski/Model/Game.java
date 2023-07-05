@@ -82,8 +82,6 @@ public class Game {
     public void upload(String filename, int index) {
         ArrayList<Snapshot> snapshots = new ArrayList<>();
 
-        // search for dev ide build path
-        // search for jar build path
         File file = new File(KlotskiApplication.class.getResource(
                 "/com/klotski/data/saves/history/"
         ).getPath() + filename);
